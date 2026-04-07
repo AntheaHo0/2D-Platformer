@@ -1,10 +1,29 @@
-[gd_scene load_steps=4 format=4 uid="uid://banbl4xboarvm"]
+[gd_scene load_steps=8 format=4 uid="uid://banbl4xboarvm"]
 
 [ext_resource type="Texture2D" uid="uid://dq1pwfvik0sx0" path="res://Sprites/Backgrounds/backgroundForest.png" id="1_i63mn"]
 [ext_resource type="TileSet" uid="uid://coj0kaemb6dur" path="res://Sprites/Tiles/new_tile_set.tres" id="1_oiua3"]
 [ext_resource type="PackedScene" uid="uid://d3o6tt470nmn6" path="res://Scenes/player.tscn" id="3_vnunq"]
+[ext_resource type="Script" uid="uid://djyjasnhl7h63" path="res://Scripts/enemy.gd" id="4_nh7xm"]
+[ext_resource type="Texture2D" uid="uid://bmeicc7cpjggc" path="res://Sprites/Characters/character_0024.png" id="5_j0k67"]
 
-[node name="Main" type="Node2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_5r5j8"]
+radius = 5.0990195
+
+[sub_resource type="GDScript" id="GDScript_akpl7"]
+script/source = "extends AnimationPlayer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[node name="Main" type="Node2D" groups=["Player"]]
 
 [node name="BackgroundSprite" type="Sprite2D" parent="."]
 position = Vector2(388, -91)
@@ -16,3 +35,20 @@ tile_set = ExtResource("1_oiua3")
 
 [node name="Player" parent="." instance=ExtResource("3_vnunq")]
 position = Vector2(-1, -18)
+
+[node name="Enemy" type="Area2D" parent="."]
+script = ExtResource("4_nh7xm")
+move_direction = Vector2(0, -50)
+
+[node name="Sprite" type="Sprite2D" parent="Enemy"]
+position = Vector2(72, 5)
+texture = ExtResource("5_j0k67")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy"]
+position = Vector2(72, 7)
+shape = SubResource("CircleShape2D_5r5j8")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy"]
+script = SubResource("GDScript_akpl7")
+
+[connection signal="body_entered" from="Enemy" to="Enemy" method="_on_body_entered"]
