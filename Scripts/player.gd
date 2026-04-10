@@ -6,23 +6,25 @@ extends CharacterBody2D
 @export var gravity : float = 500
 @export var jump_force : float = 200
 
+@export var health : int = 3
+
 var move_input : float 
 @onready var sprite = $Sprite
 @onready var anim : AnimationPlayer = $AnimationPlayer
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	# Add the gravity.
 	if not is_on_floor():
-		velocity += get_gravity() * delta
+		velocity += get_gravity() * _delta
 
 	# get move input
 	move_input = Input.get_axis("move_left", "move_right")
 
 	# movement
 	if move_input != 0:
-		velocity.x = lerp(velocity.x, move_input * move_speed, acceleration * delta)
+		velocity.x = lerp(velocity.x, move_input * move_speed, acceleration * _delta)
 	else: 
-		velocity.x  = lerp(velocity.x, 0.0, braking * delta)
+		velocity.x  = lerp(velocity.x, 0.0, braking * _delta)
 
 	# jumping
 	if Input.is_action_just_pressed("jump") and is_on_floor():
@@ -45,6 +47,20 @@ func _manage_animation ():
 	else: 
 		anim.play("idle") 
 		
+func take_damage (amount : int):
+	health -= amount
+	
+	if health <= 0:
+		call_deferred("game_over")
+
+func game_over ():
+	get_tree().change_scene_to_file("res://Scenes/Level_1.tscn")
+	
+func increase_score (_amount : int):
+	PlayerStats.score += _amount
+	print(PlayerStats.score)
+	
+	 
 	
 	
 	
