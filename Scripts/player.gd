@@ -19,7 +19,9 @@ var move_input : float
 
 var take_damage_sfx : AudioStream = preload("res://Audio/take_damage.wav") 
 var coin_sfx : AudioStream = preload("res://Audio/coin.wav") 
-
+var jumps_made = 0
+const MAX_JUMPS = 2
+@export var jump_velocity = -400.0 
 func _physics_process(_delta):
 	# Add the gravity.
 	if not is_on_floor():
@@ -37,6 +39,12 @@ func _physics_process(_delta):
 	# jumping
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = -jump_force
+		if is_on_floor():
+			jumps_made = 0
+			if jumps_made < MAX_JUMPS:
+				velocity.y = jump_velocity
+				jumps_made += 1
+	
 
 	move_and_slide()
 
